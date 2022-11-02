@@ -20,7 +20,6 @@ class Caltech(VisionDataset):
 
         self.split = split # This defines the split you are going to use
                            # (split files are called 'train.txt' and 'test.txt')
-
         '''
         - Here you should implement the logic for reading the splits files and accessing elements
         - If the RAM size allows it, it is faster to store all data in memory
@@ -29,6 +28,10 @@ class Caltech(VisionDataset):
           through the index
         - Labels should start from 0, so for Caltech you will have lables 0...100 (excluding the background class) 
         '''
+        self.labels = {label : i for i,label in enumerate(os.listdir(os.path.join(root, "101_ObjectCategories"))) if label != "BACKGROUND_Google" }
+
+        with open(os.path.join(root, split + ".txt")) as f:
+            self.data = [(line, self.labels[line.split('/')[0]]) for line in f.readlines()]
 
     def __getitem__(self, index):
         '''
@@ -40,7 +43,8 @@ class Caltech(VisionDataset):
             tuple: (sample, target) where target is class_index of the target class.
         '''
 
-        image, label = ... # Provide a way to access image and label via index
+        image, label = pil_loader(self.data[index][0]), self.data[index][1] 
+                           # Provide a way to access image and label via index
                            # Image should be a PIL Image
                            # label can be int
 
@@ -55,5 +59,5 @@ class Caltech(VisionDataset):
         The __len__ method returns the length of the dataset
         It is mandatory, as this is used by several other components
         '''
-        length = ... # Provide a way to get the length (number of elements) of the dataset
+        length = len(self.data) # Provide a way to get the length (number of elements) of the dataset
         return length

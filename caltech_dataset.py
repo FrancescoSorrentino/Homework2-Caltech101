@@ -31,7 +31,7 @@ class Caltech(VisionDataset):
         self.labels = {label : i for i,label in enumerate(os.listdir(os.path.join(root, "101_ObjectCategories"))) if label != "BACKGROUND_Google" }
 
         with open(os.path.join(root, split + ".txt")) as f:
-            self.data = [(line, self.labels[line.split('/')[0]]) for line in f.readlines()]
+            self.data = [(line, self.labels[line.split('/')[0]]) for line in f.readlines() if line.split('/')[0] != "BACKGROUND_Google" ]
 
     def __getitem__(self, index):
         '''
